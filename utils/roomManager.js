@@ -1,6 +1,7 @@
-const { default: authService } = require('../../frontend/src/features/auth/authService');
-const songService = require('../services/deezerService');
-const socket = require('../socket');
+const { default: authService } = require('../../frontend/src/features/auth/authService')
+const songService = require('../services/deezerService')
+const socket = require('../socket')
+const matchmaker = require('../utils/matchmaker')
 
 const rooms = {};
 
@@ -16,7 +17,7 @@ function ensureRoom(roomId){
     }
 }
 
-exports.joinRoom = (io, socket, roomId, playerName) =>
+exports.joinRoom = (io, socket, roomId, userId, name) =>
 {
     ensureRoom(roomId)
 
@@ -24,10 +25,10 @@ exports.joinRoom = (io, socket, roomId, playerName) =>
 
     if(!room.players.find(p => p.id === socket.id))
     {
-        room.players.push({id: socket.id, name:playerName})
+        room.players.push({socketId: socket.id, userId, name})
         room.scores[socket.io] = 0;
         socket.join(roomId)
-        io.to(roomId).emit('room_update', room.players)
+        io.to(roomId).emit('room_update', room.players.map(p => p.name))
     
     }
 }
@@ -39,11 +40,12 @@ exports.startRound =async(io, roomId) =>
     if(!room || room.roundActive) return
     room.roundActive = true
     const song = await songService.getNewSongFromAPI()
-    room.currentSong = song;
-    io.to(roomId).emit('new_song', {previewURL: song.previewURL})
+    room.currentSong = song
+    console.log(roomId)
+    io.to(roomId).emit('new_song', room.currentSong)
 }
 
-exports.handleGuess = (io,socket,roomId, guess) =>
+exports.handleGuess = async (io,socket,roomId, guess) =>
 {
     const room = rooms[roomId]
     if(!room?.roundActive) return
@@ -59,10 +61,48 @@ exports.handleGuess = (io,socket,roomId, guess) =>
     room.roundActive = false
     room.scores[socket.id] = 1
 
-    const winnerId = socket.id
-    const loserId = room.players.find(p => p.id !== socket.id).id
+    const winner= room.players.find(p => p.socketId == socket.id)
+    const loser = room.players.find(p => p.id !== socket.id)
 
-    //elo update here
-
+    const winnerNewElo = eloChange(winner.elo,loser.elo, 1)
+    const loserNewElo = eloChange(loser.elo,winner.elo, 0)
     
+    const updatedWinner = await userService.updateElo(winner.userId, winnerNewElo)
+    const updatedLoser = await userService.updateElo(loser.userId, loserNewElo)
+    
+    io.to(roomId).emit('game_over', {
+        winner: {name: winner.name, newElo: winnerId.elo},
+        loser: {name: loser.name, newElo: loserId.elo}
+    })
+
+    delete rooms[roomId]
+}
+
+exports.leaveRoom = (io, socket) =>
+{
+    matchmaker.leaveQueue(socket)
+
+    for(const roomId of socket.rooms)
+    {
+        if(roomId === socket.id) 
+        {
+            continue
+        }
+        
+        const room = rooms[roomId]
+        if(!room) continue
+       
+        room.players = room.players.filter(p => p.socketId !== socket.id)
+        delete room.scores[socket.id]
+        
+        io.to(roomId).emit('room_update', room.players.map(p => p.name))
+    }
+}
+
+function eloChange(playerElo, oponentElo, score)
+{
+    const k = 32;
+    let e = 0.5 + (playerElo - oponentElo)/800;
+    e = Math.max(0.01, Math.min(0.99, E))
+    return Math.round(playerElo+k*(score - e))
 }

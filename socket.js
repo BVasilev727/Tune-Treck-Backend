@@ -1,42 +1,55 @@
-const { parse } = require('dotenv')
-const {joinRoom, startRoom, hangleGuess, leaveRoom} = require('./utils/roomManager')
+const roomManager = require('./utils/roomManager')
+const jwt = require('jsonwebtoken')
+const cookie = require('cookie')
+const matchmaker = require('./utils/matchmaker')
 
-module.exports = function setupMultiplayerSockets(server){
 
-    const io = new (require('socket.io')).Server(server,{
-        cors:{origin: '*'}
-    })
+module.exports = function setupMultiplayerSockets(io){
 
     io.use(async(socket, next) =>
     {
-        try{
-            const raw = socket.handshake.headers.cookie || ''
-            const parsed = cookie.parse(raw)
-            
+        const raw = socket.handshake.headers.cookie || ''
+        const parsed = cookie.parse(raw)
+        const token = parsed.token
+        if(!token) 
+        {
+            return next(new Error('auth error'))
         }
-        catch{}
+        try{
+            const {id} = jwt.verify(token, process.env.JWT_SECRET)
+            socket.userId = id
+            return next()
+        }
+        catch(err)
+        {
+            return next(new Error('auth error'))
+        }
     })
-
+    io.on('connection_error', (err) =>
+    {
+        console.log(err.message)
+    })
     io.on('connection', (socket) =>
     {
-        socket.on('join_room', ({roomId,playerName}) =>
+        socket.on('find_match', ({name}) =>
         {
-            joinRoom(io, socket, roomId, playerName)
+            matchmaker.requestMatch(io, socket, socket.userId, name)
         })
 
         socket.on('start_game', ({roomId}) =>
         {
-            startRound(io,roomId)
+            roomManager.startRound(io,roomId)
         })
 
         socket.on('guess', ({roomId, guess}) =>
         {
-            handleGuess(io,socket,roomId,guess)
+            roomManager.handleGuess(io,socket,roomId,guess)
         })
 
         socket.on('disconnecting', () =>
         {
-            leaveRoom(io,socket)
+            matchmaker.leaveQueue(socket)
+            roomManager.leaveRoom(io,socket)
         })
     })
 }

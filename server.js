@@ -33,11 +33,15 @@ app.use('/api/users', require('./routes/userRoutes'))
 
 app.use(errorHandler)
 
-//HTTP + Socket.IO server
 const server = http.createServer(app)
 const io = new Server(server,
   {
-    cors:{origin: '*'}
+    cors:
+    {
+      origin: 'http://localhost:3000',
+      methods: ['GET', 'POST'],
+      credentials:true
+    }
   }
 )
 

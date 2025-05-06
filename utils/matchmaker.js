@@ -1,12 +1,10 @@
 const {nanoid} = require('nanoid')
-const {joinRoom} = require('./roomManager')
+const roomManager = require('./roomManager')
 const socket = require('../socket')
 
 let queue = []
 
-module.exports
-{
-    requirestMatch: (io,socket,playerName) =>
+exports.requestMatch = (io,socket,playerName) =>
     {
         queue.push({socket, playerName})
         if(queue.length >= 2)
@@ -15,14 +13,13 @@ module.exports
             const b = queue.shift()
             const roomId = nanoid(8)
 
-            joinRoom(io,a.socket, roomId, a.playerName)
-            joinRoom(io,a.socket, roomId, a.playerName)
+            roomManager.joinRoom(io,a.socket, roomId, a.userId, a.playerName)
+            roomManager.joinRoom(io,b.socket, roomId, b.userId,b.playerName)
 
             io.to(roomId).emit('matched', {roomId, players: [a.playerName, b.playerName]})
         }
     }
-    leaveQueue: (socket) =>
-    {
-        queue = queue.filter((p) => p.socket.id !== socket.id)
-    }
+exports.leaveQueue=(socket) =>
+{
+    queue = queue.filter((p) => p.socket.id !== socket.id)
 }
