@@ -1,4 +1,4 @@
-const User = reqire('../models/userModel')
+const User = require('../models/userModel')
 
 exports.updateElo = (userId, newElo) =>
 {
