@@ -1,4 +1,4 @@
-const { default: authService } = require('../../frontend/src/features/auth/authService')
+const {userService} = require('../services/userService')
 const songService = require('../services/deezerService')
 const socket = require('../socket')
 const matchmaker = require('../utils/matchmaker')
