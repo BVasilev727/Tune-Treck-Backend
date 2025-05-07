@@ -10,7 +10,6 @@ const {Server} = require('socket.io')
 const http = require('http')
 const setupMultiplayerSockets = require('./socket')
 
-const ALLOWED_ORIGINS = [process.env.CORS_ORIGIN ]
 //Express setup
 connectDB()
 const app = express()
@@ -20,14 +19,11 @@ app.use(cookieParser())
 
 app.use(cors({
     origin: (origin, callback) => {
-      if (!origin) {
+      console.log(origin)
+      if (!origin || origin===process.env.CORS_ORIGIN) {
         return callback(null, true);
       } 
-      if(ALLOWED_ORIGINS.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error('Not allowed by CORS'));
-      
+      callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
   }));
