@@ -10,7 +10,7 @@ const {Server} = require('socket.io')
 const http = require('http')
 const setupMultiplayerSockets = require('./socket')
 
-const ALLOWED_ORIGINS = [process.env.CORS_ORIGIN]
+const ALLOWED_ORIGINS = [process.env.CORS_ORIGIN ]
 //Express setup
 connectDB()
 const app = express()
