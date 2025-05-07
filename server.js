@@ -37,7 +37,7 @@ const io = new Server(server,
   {
     cors:
     {
-      origin: ALLOWED_ORIGINS,
+      origin: process.env.CORS_ORIGIN,
       methods: ['GET', 'POST'],
       credentials:true
     }
