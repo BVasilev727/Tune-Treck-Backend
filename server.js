@@ -17,16 +17,12 @@ app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(cookieParser())
 
-app.use(cors({
-    origin: (origin, callback) => {
-      console.log(origin)
-      if (!origin || origin===process.env.CORS_ORIGIN) {
-        return callback(null, true);
-      } 
-      callback(new Error('Not allowed by CORS'));
-    },
-    credentials: true,
-  }));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+  })
+)
 app.use('/api/song', require('./routes/songRoutes'))
 app.use('/api/users', require('./routes/userRoutes'))
 
