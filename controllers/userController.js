@@ -40,7 +40,7 @@ const registerUser = asyncHandler(async (req, res) =>
             {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
+                sameSite: 'none',
                 maxAge: 3600000
             }
         )
@@ -64,7 +64,8 @@ const loginUser = asyncHandler(async (req, res) =>
             {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
+                sameSite: 'none',
+                path:'/',
                 maxAge: 3600000
             }
         )
@@ -87,7 +88,7 @@ const logoutUser = asyncHandler(async (req,res) =>
     res.cookie('token', '', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: "lax",
+        sameSite: "none",
         expires: new Date(0)
     })
 
