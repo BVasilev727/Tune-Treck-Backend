@@ -8,21 +8,19 @@ module.exports = function setupMultiplayerSockets(io){
 
     io.use(async(socket, next) =>
     {
-        const raw = socket.handshake.headers.cookie || ''
-        const parsed = cookie.parse(raw)
-        const token = parsed.token
+        const token = socket.handshake.auth?.token
         if(!token) 
         {
-            return next(new Error('auth error'))
+            return next(new Error('auth error, no token'))
         }
         try{
-            const {id} = jwt.verify(token, process.env.JWT_SECRET)
-            socket.userId = id
+            const payload = jwt.verify(token, process.env.JWT_SECRET)
+            socket.userId = payload.id
             return next()
         }
         catch(err)
         {
-            return next(new Error('auth error'))
+            return next(new Error('auth error, invalid token'))
         }
     })
     io.on('connection_error', (err) =>
