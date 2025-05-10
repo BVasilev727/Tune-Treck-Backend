@@ -41,9 +41,20 @@ const registerUser = asyncHandler(async (req, res) =>
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'none',
-                maxAge: 3600000
+                maxAge: 3600000,
+                path: '/'
             }
         )
+        res.status(201).json({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            elo: user.elo,
+            gamesPlayed: user.gamesPlayed,
+            gamesWon: user.gamesWon,
+            profilePicture: user.profilePicture,
+            token
+        })
     }
     else{
         res.status(400)
@@ -69,7 +80,16 @@ const loginUser = asyncHandler(async (req, res) =>
                 maxAge: 3600000
             }
         )
-        res.json({message: `${user.name} logged in`})
+        res.json({ 
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            elo: user.elo,
+            gamesPlayed: user.gamesPlayed,
+            gamesWon: user.gamesWon,
+            profilePicture: user.profilePicture,
+            token
+        })
     }
     else{
         res.status(400)
