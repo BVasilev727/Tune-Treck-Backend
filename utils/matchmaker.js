@@ -17,6 +17,8 @@ exports.requestMatch = (io,socket,playerName) =>
             roomManager.joinRoom(io,b.socket, roomId, b.userId,b.playerName)
 
             io.to(roomId).emit('matched', {roomId, players: [a.playerName, b.playerName]})
+
+            roomManager.startRound(io, roomId)
         }
     }
 exports.leaveQueue=(socket) =>
