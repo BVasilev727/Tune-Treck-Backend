@@ -103,7 +103,7 @@ const getCurrentUser = asyncHandler(async (req, res) =>
 
     const token = req.cookies.token
 
-    res.status(200).json({id: _id, name, email, elo, gamesPlayed, gamesWon, profilePicture, token})
+    res.status(200).json({id: _id, name, email, elo, gamesPlayed, gamesWon, profilePicture,token})
 })
 
 const logoutUser = asyncHandler(async (req,res) =>

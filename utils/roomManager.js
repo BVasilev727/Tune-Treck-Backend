@@ -41,7 +41,7 @@ exports.startRound =async(io, roomId) =>
     room.roundActive = true
     const song = await songService.getNewSongFromAPI()
     room.currentSong = song
-    console.log(roomId)
+    console.log(roomId, room.currentSong)
     io.to(roomId).emit('new_song', room.currentSong)
 }
 
