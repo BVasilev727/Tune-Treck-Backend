@@ -100,7 +100,10 @@ const loginUser = asyncHandler(async (req, res) =>
 const getCurrentUser = asyncHandler(async (req, res) =>
 {
     const {_id, name, email, elo, gamesPlayed, gamesWon, profilePicture} = await User.findById(req.user.id)
-    res.status(200).json({id: _id, name, email, elo, gamesPlayed, gamesWon, profilePicture})
+
+    const token = req.cookies.token
+
+    res.status(200).json({id: _id, name, email, elo, gamesPlayed, gamesWon, profilePicture, token})
 })
 
 const logoutUser = asyncHandler(async (req,res) =>
