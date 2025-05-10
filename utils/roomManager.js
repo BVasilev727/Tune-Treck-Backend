@@ -70,8 +70,8 @@ exports.handleGuess = async (io,socket,roomId, guess) =>
     const updatedLoser = await userService.updateElo(loser.userId, loserNewElo)
     
     io.to(roomId).emit('game_over', {
-        winner: {name: winner.name, newElo: winnerId.elo},
-        loser: {name: loser.name, newElo: loserId.elo}
+        winner: {name: winner.name, newElo: updatedWinner.elo},
+        loser: {name: loser.name, newElo: updatedLoser.elo}
     })
 
     delete rooms[roomId]
