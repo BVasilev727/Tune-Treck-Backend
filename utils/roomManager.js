@@ -22,7 +22,10 @@ exports.joinRoom = (io, socket, roomId, userId, name) =>
     ensureRoom(roomId)
 
     const room = rooms[roomId]
-
+    if(room.roundActive && room.currentSong)
+    {
+        socket.emit('new_song', room.currentSong)
+    }
     if(!room.players.find(p => p.socketId === socket.id))
     {
         room.players.push({socketId: socket.id, userId, name})
