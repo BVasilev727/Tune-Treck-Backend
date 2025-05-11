@@ -33,6 +33,11 @@ module.exports = function setupMultiplayerSockets(io){
         {
             matchmaker.requestMatch(io, socket, socket.userId, name)
         })
+        
+        socket.on('join_room', ({roomId}) =>
+        {
+            roomManager.joinRoom(io,socket, roomId, socket.userId, socket.username)
+        })
 
         socket.on('guess', ({roomId, guess}) =>
         {

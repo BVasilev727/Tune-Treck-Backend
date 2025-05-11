@@ -23,10 +23,10 @@ exports.joinRoom = (io, socket, roomId, userId, name) =>
 
     const room = rooms[roomId]
 
-    if(!room.players.find(p => p.id === socket.id))
+    if(!room.players.find(p => p.socketId === socket.id))
     {
         room.players.push({socketId: socket.id, userId, name})
-        room.scores[socket.io] = 0;
+        room.scores[socket.id] = 0;
         socket.join(roomId)
         io.to(roomId).emit('room_update', room.players.map(p => p.name))
     
@@ -41,7 +41,15 @@ exports.startRound =async(io, roomId) =>
     room.roundActive = true
     const song = await songService.getNewSongFromAPI()
     room.currentSong = song
-    io.to(roomId).emit('new_song', room.currentSong)
+    io.to(roomId).emit('new_song', 
+        {
+            trackId: song.trackId,
+            title: song.title,
+            artistName: song.artistName,
+            album: song.album,
+            previewURL: song.previewURL
+        }
+    )
 }
 
 exports.handleGuess = async (io,socket,roomId, guess) =>
