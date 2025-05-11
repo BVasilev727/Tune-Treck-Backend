@@ -58,6 +58,7 @@ exports.handleGuess = async (io,socket,roomId, guess) =>
         return        
     }
 
+    room.roundActive = false
     room.scores[socket.id] = 1
 
     const winner= room.players.find(p => p.socketId == socket.id)
@@ -73,7 +74,6 @@ exports.handleGuess = async (io,socket,roomId, guess) =>
         winner: {name: winner.name, newElo: updatedWinner.elo},
         loser: {name: loser.name, newElo: updatedLoser.elo}
     })
-    room.roundActive = false
     delete rooms[roomId]
 }
 
