@@ -40,8 +40,8 @@ exports.startRound =async(io, roomId) =>
     room.roundActive = true
     const song = await songService.getNewSongFromAPI()
     room.currentSong = song
-    console.log(roomId)
-    io.to(roomId).emit('new_song', song)
+    const plainSong = JSON.parse(JSON.stringify(song))
+    io.to(roomId).emit('new_song', plainSong)
 }
 
 exports.handleGuess = async (io,socket,roomId, guess) =>
