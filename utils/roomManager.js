@@ -29,7 +29,6 @@ exports.joinRoom = (io, socket, roomId, userId, name) =>
         room.scores[socket.id] = 0;
         socket.join(roomId)
         io.to(roomId).emit('room_update', room.players.map(p => p.name))
-    
     }
 }
 
