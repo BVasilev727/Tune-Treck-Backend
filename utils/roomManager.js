@@ -34,14 +34,15 @@ exports.joinRoom = (io, socket, roomId, userId, name) =>
 
 exports.startRound =async(io, roomId) =>
 {
-    const room = rooms[roomId]
     ensureRoom(roomId)
+
+    const room = rooms[roomId]
+    
     if(!room || room.roundActive) return
     room.roundActive = true
     const song = await songService.getNewSongFromAPI()
     room.currentSong = song
-    const plainSong = JSON.parse(JSON.stringify(song))
-    io.to(roomId).emit('new_song', plainSong)
+    io.to(roomId).emit('new_song', song)
 }
 
 exports.handleGuess = async (io,socket,roomId, guess) =>
