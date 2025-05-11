@@ -39,6 +39,11 @@ module.exports = function setupMultiplayerSockets(io){
             roomManager.joinRoom(io,socket, roomId, socket.userId, socket.username)
         })
 
+        socket.on('start_game',({roomId}) =>
+        {
+            roomManager.startRound(io,roomId)
+        })
+
         socket.on('guess', ({roomId, guess}) =>
         {
             roomManager.handleGuess(io,socket,roomId,guess)
