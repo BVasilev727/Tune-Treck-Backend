@@ -1,15 +1,13 @@
-const User = require('../models/userModel')
+import User from '../models/userModel'
 
-exports.updateElo = (userId, newElo) =>
-{
-    User.findByIdAndUpdate(
+export async function updateElo(userId, newElo){
+    return await User.findByIdAndUpdate(
         userId,
         {elo: newElo},
         {new: true}
     )
 }
 
-exports.findById = (id) =>
-{
-    User.findById(id)
+export async function findById(id){
+    return await User.findById(id)
 }
