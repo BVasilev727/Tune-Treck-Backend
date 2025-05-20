@@ -34,12 +34,12 @@ module.exports = function setupMultiplayerSockets(io){
             matchmaker.requestMatch(io, socket, socket.userId, name)
         })
         
-        socket.on('join_room', ({roomId}) =>
+        socket.on('join_room', (roomId) =>
         {
             roomManager.joinRoom(io,socket, roomId, socket.userId, socket.username)
         })
 
-        socket.on('start_game',({roomId}) =>
+        socket.on('start_game',(roomId) =>
         {
             roomManager.startRound(io,roomId)
         })
