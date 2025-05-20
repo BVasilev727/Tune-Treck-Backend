@@ -105,6 +105,6 @@ function eloChange(playerElo, oponentElo, score)
 {
     const k = 32;
     let e = 0.5 + (playerElo - oponentElo)/800;
-    e = Math.max(0.01, Math.min(0.99, E))
+    e = Math.max(0.01, Math.min(0.99, e))
     return Math.round(playerElo+k*(score - e))
 }
