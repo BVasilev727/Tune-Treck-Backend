@@ -1,4 +1,4 @@
-const songService = require('../services/songService')
+const {getNewSongFromAPI} = require('../services/songService')
 const userService =require('../services/userService')
 const socket = require('../socket')
 const matchmaker = require('../utils/matchmaker')
@@ -43,7 +43,7 @@ exports.startRound =async(io, roomId) =>
     
     if(!room || room.roundActive) return
     room.roundActive = true
-    const song = await songService.getNewSongFromAPI()
+    const song = await getNewSongFromAPI()
     room.currentSong = song
     io.to(roomId).emit('new_song', song)
 }
