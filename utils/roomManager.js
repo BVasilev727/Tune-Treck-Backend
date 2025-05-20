@@ -1,5 +1,5 @@
-import songService from '../services/songService'
-import userService from '../services/userService'
+const songService = require('../services/songService')
+const userService =require('../services/userService')
 const socket = require('../socket')
 const matchmaker = require('../utils/matchmaker')
 

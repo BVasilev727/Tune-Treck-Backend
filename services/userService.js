@@ -1,6 +1,6 @@
-import User from '../models/userModel'
+const User = require('../models/userModel')
 
-export async function updateElo(userId, newElo){
+async function updateElo(userId, newElo){
     return await User.findByIdAndUpdate(
         userId,
         {elo: newElo},
@@ -8,6 +8,8 @@ export async function updateElo(userId, newElo){
     )
 }
 
-export async function findById(id){
+async function findById(id){
     return await User.findById(id)
 }
+
+module.exports = {updateElo, findById}

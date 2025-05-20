@@ -1,8 +1,8 @@
-import cloudinary from '../utils/cloudinaryUtil.js';
-import expressAsyncHandler from "express-async-handler";
-import User from '../models/userModel.js'
+const cloudinary = require('../utils/cloudinaryUtil.js');
+const expressAsyncHandler =require("express-async-handler");
+const User =require('../models/userModel.js')
 
-export const uploadImage = expressAsyncHandler(async (req, res) =>
+const uploadImage = expressAsyncHandler(async (req, res) =>
 {
     if(!req.file)
     {
@@ -28,3 +28,5 @@ export const uploadImage = expressAsyncHandler(async (req, res) =>
 
     res.json({message: 'profile picture successfully updated'})
 })
+
+module.exports = {uploadImage}

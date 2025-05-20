@@ -1,4 +1,4 @@
-const parseSongResponse = (song) => {
+function parseSongResponse(song){
     if (!song) {
         throw new Error('no song given to parse')
     }
@@ -12,7 +12,7 @@ const parseSongResponse = (song) => {
     }
 }
 
-const parseSongsResponse = (songs) => {
+function parseSongsResponse(songs){
    
     if(!Array.isArray(songs))
     {
@@ -22,4 +22,4 @@ const parseSongsResponse = (songs) => {
     return parsedPlaylist
 }
 
-export { parseSongResponse, parseSongsResponse }
+module.exports =  { parseSongResponse, parseSongsResponse }
