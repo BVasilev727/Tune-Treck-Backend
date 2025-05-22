@@ -76,7 +76,7 @@ exports.handleGuess = async (io,socket,roomId, guess) =>
     const winnerNewElo = eloChange(winnerUser.elo,loserUser.elo, 1)
     const loserNewElo = eloChange(loserUser.elo,winnerUser.elo, 0)
     
-    const updatedWinner = await userService.updateElo(winnerUser.userId, winnerNewElo)
+    const updatedWinner = await userService.updateElo(winnerMeta.userId, winnerNewElo)
     const updatedLoser = await userService.updateElo(loserUser.userId, loserNewElo)
     
     io.to(roomId).emit('game_over', {
