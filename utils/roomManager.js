@@ -22,16 +22,19 @@ exports.joinRoom = (io, socket, roomId, userId, name) =>
     ensureRoom(roomId)
 
     const room = rooms[roomId]
-    if(room.roundActive && room.currentSong)
-    {
-        socket.emit('new_song', room.currentSong)
-    }
+
+    socket.join(roomId)
+
     if(!room.players.find(p => p.socketId === socket.id))
     {
         room.players.push({socketId: socket.id, userId, name})
         room.scores[socket.id] = 0;
-        socket.join(roomId)
-        io.to(roomId).emit('room_update', room.players.map(p => p.name))
+        io.to(roomId).emit('room_update', room.players.map(p => ({userId: p.userId, name: p.name})))
+    }
+    
+    if(room.roundActive && room.currentSong)
+    {
+        socket.emit('new_song', room.currentSong)
     }
 }
 
