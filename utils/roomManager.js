@@ -67,18 +67,21 @@ exports.handleGuess = async (io,socket,roomId, guess) =>
     room.roundActive = false
     room.scores[socket.id] = 1
 
-    const winner= room.players.find(p => p.socketId == socket.id)
-    const loser = room.players.find(p => p.id !== socket.id)
+    const winnerMeta= room.players.find(p => p.socketId == socket.id)
+    const loserMeta = room.players.find(p => p.socketId !== socket.id)
 
-    const winnerNewElo = eloChange(winner.elo,loser.elo, 1)
-    const loserNewElo = eloChange(loser.elo,winner.elo, 0)
+    const winnerUser = await userService.findById(winnerMeta.userId)
+    const loserUser = await userService.findById(loserMeta.userId)
+
+    const winnerNewElo = eloChange(winnerUser.elo,loserUser.elo, 1)
+    const loserNewElo = eloChange(loserUser.elo,winnerUser.elo, 0)
     
-    const updatedWinner = await userService.updateElo(winner.userId, winnerNewElo)
-    const updatedLoser = await userService.updateElo(loser.userId, loserNewElo)
+    const updatedWinner = await userService.updateElo(winnerUser.userId, winnerNewElo)
+    const updatedLoser = await userService.updateElo(loserUser.userId, loserNewElo)
     
     io.to(roomId).emit('game_over', {
-        winner: {name: winner.name, newElo: updatedWinner.elo},
-        loser: {name: loser.name, newElo: updatedLoser.elo}
+        winner: {name: winnerMeta.name, newElo: updatedWinner.elo},
+        loser: {name: loserMeta.name, newElo: updatedLoser.elo}
     })
     delete rooms[roomId]
 }
