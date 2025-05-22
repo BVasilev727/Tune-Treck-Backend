@@ -1,5 +1,5 @@
-const {getNewSongFromAPI} = require('../services/songService')
 const userService =require('../services/userService')
+const {getNewSongFromAPI} = require('../services/deezerService')
 const socket = require('../socket')
 const matchmaker = require('../utils/matchmaker')
 
