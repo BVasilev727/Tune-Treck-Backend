@@ -17,19 +17,23 @@ function ensureRoom(roomId){
     }
 }
 
-exports.joinRoom = (io, socket, roomId, userId, name) =>
+exports.joinRoom = async (io, socket, roomId, userId) =>
 {
     ensureRoom(roomId)
 
     const room = rooms[roomId]
     
+    const user = await userService.getUserById(userId)
+    const username = user?.name || "unknown"
+
     socket.join(roomId)
 
     if(!room.players.find(p => p.socketId === socket.id))
     {
-        room.players.push({socketId: socket.id, userId, name})
+        room.players.push({socketId: socket.id, userId, username})
         room.scores[socket.id] = 0;
-        io.to(roomId).emit('room_update', room.players.map(p => ({userId: p.userId, name: p.name})))
+
+        io.to(roomId).emit('room_update', room.players.map(p => ({userId: p.userId, name: username})))
     }
     
     if(room.roundActive && room.currentSong)
@@ -95,9 +99,7 @@ exports.handleGuess = async (io,socket,roomId, guess) =>
 
     room.players.forEach(p => {
         const playerSocket = io.sockets.sockets.get(p.socketId)
-        if(playerSocket) {playerSocket.leave(roomId)
-            console.log(p.id + "left")
-        }
+        if(playerSocket) playerSocket.leave(roomId)
     })
 
     delete rooms[roomId]
