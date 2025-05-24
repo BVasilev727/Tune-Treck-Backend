@@ -17,7 +17,7 @@ function ensureRoom(roomId){
     }
 }
 
-exports.joinRoom = (io, socket, roomId, userId) =>
+exports.joinRoom = (io, socket, roomId, userId, name) =>
 {
     ensureRoom(roomId)
 
