@@ -36,7 +36,7 @@ module.exports = function setupMultiplayerSockets(io){
         
         socket.on('join_room', (roomId) =>
         {
-            roomManager.joinRoom(io,socket, roomId, socket.userId, name)
+            roomManager.joinRoom(io,socket, roomId, socket.userId, socket.username)
         })
 
         socket.on('start_game',(roomId) =>
