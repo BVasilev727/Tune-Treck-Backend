@@ -27,10 +27,10 @@ exports.joinRoom = (io, socket, roomId, userId) =>
 
     if(!room.players.find(p => p.socketId === socket.id))
     {
-        room.players.push({socketId: socket.id, userId, username})
+        room.players.push({socketId: socket.id, userId, name})
         room.scores[socket.id] = 0;
 
-        io.to(roomId).emit('room_update', room.players.map(p => ({userId: p.userId, name: username})))
+        io.to(roomId).emit('room_update', room.players.map(p => ({userId: p.userId, name: p.name})))
     }
     
     if(room.roundActive && room.currentSong)
