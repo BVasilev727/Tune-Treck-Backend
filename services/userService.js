@@ -14,7 +14,7 @@ async function findById(id){
 
 async function getTopPlayers(limit = 10)
 {
-    return User.find({},'username elo').sort({elo: -1})
+    return User.find({},'name elo profilePicture').sort({elo: -1})
     .limit(limit)
     .lean()
     .exec()
