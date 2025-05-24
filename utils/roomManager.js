@@ -22,7 +22,7 @@ exports.joinRoom = (io, socket, roomId, userId, name) =>
     ensureRoom(roomId)
 
     const room = rooms[roomId]
-
+    
     socket.join(roomId)
 
     if(!room.players.find(p => p.socketId === socket.id))
@@ -89,8 +89,8 @@ exports.handleGuess = async (io,socket,roomId, guess) =>
         return;
     }
     io.to(roomId).emit('game_over', {
-        winner: {name: winnerMeta.name, newElo: updatedWinner.elo},
-        loser: {name: loserMeta.name, newElo: updatedLoser.elo}
+        winner: {name: winnerUser.name, newElo: updatedWinner.elo},
+        loser: {name: loserUser.name, newElo: updatedLoser.elo}
     })
     delete rooms[roomId]
 }
