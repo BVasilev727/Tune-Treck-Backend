@@ -12,4 +12,12 @@ async function findById(id){
     return await User.findById(id)
 }
 
-module.exports = {updateElo, findById}
+async function getTopPlayers(limit = 10)
+{
+    return User.find({},'username elo').sort({elo: -1})
+    .limit(limit)
+    .lean()
+    .exec()
+}
+
+module.exports = {updateElo, findById, getTopPlayers}
