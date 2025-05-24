@@ -92,6 +92,12 @@ exports.handleGuess = async (io,socket,roomId, guess) =>
         winner: {name: winnerUser.name, newElo: updatedWinner.elo},
         loser: {name: loserUser.name, newElo: updatedLoser.elo}
     })
+
+    room.players.forEach(p => {
+        const playerSocket = io.sockets.sockets.get(p.socketId)
+        if(playerSocket) playerSocket.leaveRoom(roomId)
+    })
+
     delete rooms[roomId]
 }
 
