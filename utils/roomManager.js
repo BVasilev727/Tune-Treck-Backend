@@ -23,7 +23,7 @@ exports.joinRoom = async (io, socket, roomId, userId) =>
 
     const room = rooms[roomId]
     
-    const user = await userService.getUserById(userId)
+    const user = await userService.findById(userId)
     const username = user?.name || "unknown"
 
     socket.join(roomId)
