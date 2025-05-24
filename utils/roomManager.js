@@ -95,7 +95,9 @@ exports.handleGuess = async (io,socket,roomId, guess) =>
 
     room.players.forEach(p => {
         const playerSocket = io.sockets.sockets.get(p.socketId)
-        if(playerSocket) playerSocket.leave(roomId)
+        if(playerSocket) {playerSocket.leave(roomId)
+            console.log(p.id + "left")
+        }
     })
 
     delete rooms[roomId]
