@@ -34,9 +34,9 @@ module.exports = function setupMultiplayerSockets(io){
             matchmaker.requestMatch(io, socket, socket.userId, name)
         })
         
-        socket.on('join_room', async(roomId) =>
+        socket.on('join_room', (roomId) =>
         {
-            await roomManager.joinRoom(io,socket, roomId, socket.userId, socket.username)
+            roomManager.joinRoom(io,socket, roomId, socket.userId, socket.username)
         })
 
         socket.on('start_game',(roomId) =>

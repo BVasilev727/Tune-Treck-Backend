@@ -17,15 +17,12 @@ function ensureRoom(roomId){
     }
 }
 
-exports.joinRoom = async (io, socket, roomId, userId) =>
+exports.joinRoom = (io, socket, roomId, userId) =>
 {
     ensureRoom(roomId)
 
     const room = rooms[roomId]
     
-    const user = await userService.findById(userId)
-    const username = user?.name || "unknown"
-
     socket.join(roomId)
 
     if(!room.players.find(p => p.socketId === socket.id))
